@@ -1,0 +1,42 @@
+name: Lake Peigneur Video Render
+
+on:
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Extract Project
+        run: |
+          unzip -q lake-peigneur-video.zip -d project
+
+      - name: Install Dependencies
+        working-directory: project
+        run: npm ci
+
+      - name: Setup Browser
+        working-directory: project
+        run: npx remotion browser ensure
+
+      - name: Render Video
+        working-directory: project
+        run: |
+          mkdir -p out
+          npx remotion render src/index.jsx LakeStory out/final.mp4 --gl=angle --concurrency=2 --image-format=jpeg --jpeg-quality=92
+
+      - name: Download Video
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lake-Peigneur-Final-Video
+          path: project/out/final.mp4
