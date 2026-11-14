@@ -15,8 +15,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: false
+          node-version: 22
 
       - name: Extract Project
         run: |
@@ -45,7 +44,7 @@ jobs:
       - name: Upload Final Video
         uses: actions/upload-artifact@v4
         with:
-          name: Lake-Peigneur-720p-Final-Video
+          name: Lake-Peigneur-720p-Video
           path: project/out/final.mp4
           if-no-files-found: error
           retention-days: 7
