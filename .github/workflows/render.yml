@@ -9,15 +9,15 @@ jobs:
     timeout-minutes: 360
 
     steps:
-      - name: Get Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Extract Project
+      - name: Extract Video Project
         run: |
           unzip -q lake-peigneur-video.zip -d project
 
@@ -25,7 +25,7 @@ jobs:
         working-directory: project
         run: npm ci
 
-      - name: Setup Browser
+      - name: Install Remotion Browser
         working-directory: project
         run: npx remotion browser ensure
 
@@ -33,10 +33,11 @@ jobs:
         working-directory: project
         run: |
           mkdir -p out
+
           npx remotion render src/index.jsx LakeStory out/final.mp4 \
             --gl=angle \
             --concurrency=2 \
-            --scale=0.666667 \
+            --scale=0.6666666666666666 \
             --image-format=jpeg \
             --jpeg-quality=85 \
             --crf=23
@@ -44,7 +45,7 @@ jobs:
       - name: Upload Final Video
         uses: actions/upload-artifact@v4
         with:
-          name: Lake-Peigneur-720p-Video
+          name: Lake-Peigneur-720p-Final-Video
           path: project/out/final.mp4
           if-no-files-found: error
           retention-days: 7
